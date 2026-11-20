@@ -11,6 +11,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.opentrackdayapplication.R
 import timber.log.Timber
+import android.net.Uri
+import android.widget.ImageButton
+import android.widget.ImageView
+import androidx.activity.result.contract.ActivityResultContracts
+
 
 // Activity used to create a new placemark or edit an existing one.
 class AddEditActivity : AppCompatActivity() {
@@ -29,6 +34,9 @@ class AddEditActivity : AppCompatActivity() {
 
     // Dropdown input used to select the placemark category.
     private lateinit var categoryInput: AutoCompleteTextView
+
+    private lateinit var imagePreview: ImageView
+    private var selectedImageUri: Uri? = null
 
     // Stores the ID of the placemark being edited.
     // Remains null when creating a new placemark.
@@ -114,6 +122,29 @@ class AddEditActivity : AppCompatActivity() {
         cancelButton.setOnClickListener {
             finish()
         }
+
+
+        imagePreview = findViewById(R.id.imageView)
+        val imagePicker =
+            registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
+                if (uri != null) {
+                    // Keep access to the document URI for later use, when supported.
+                    try {
+                        contentResolver.takePersistableUriPermission(
+                            uri,
+                            android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        )
+                    } catch (_: SecurityException) {
+                        // Some providers may not grant persistable access.
+                    }
+
+                    selectedImageUri = uri
+                    imagePreview.setImageURI(uri)
+                }
+            }
+        findViewById<Button>(R.id.Imagebutton).setOnClickListener {
+            imagePicker.launch(arrayOf("image/*"))
+        }
     }
 
     // Loads an existing placemark using its ID.
@@ -155,6 +186,8 @@ class AddEditActivity : AppCompatActivity() {
 
         // Displays the existing category in the dropdown input.
         categoryInput.setText(mark.category)
+
+
     }
 
     // Validates the input and creates or updates a placemark.
@@ -214,26 +247,37 @@ class AddEditActivity : AppCompatActivity() {
         if (editingId == null) {
 
             // Creates a new placemark using the values entered by the user.
-            val mark = PlacemarkModel(
-                title = title,
-                desc = description,
-                x = x,
-                y = y,
-                category = category
-            )
+            try {
+                val mark = PlacemarkModel(
+                    title = titleInput.text.toString().trim(),
+                    desc = descriptionInput.text.toString(),
+                    x = xInput.text.toString().toDouble(),
+                    y = yInput.text.toString().toDouble(),
+                    category = categoryInput.toString().trim(),
+                    imageUri = selectedImageUri?.toString()
+                )
 
-            // Logs information about the new placemark.
-            Timber.d("Creating mark id=${mark.id}, title=${mark.title}")
+                // Logs information about the new placemark.
+                Timber.d("Creating mark id=${mark.id}, title=${mark.title}")
+                mark.validate()
+                // Adds the new placemark to the application's data store.
+                AppData.placedMarks.create(mark)
 
-            // Adds the new placemark to the application's data store.
-            AppData.placedMarks.create(mark)
+                // Displays a confirmation message after creating the placemark.
+                Toast.makeText(
+                    this,
+                    "Mark created",
+                    Toast.LENGTH_SHORT
+                ).show()
 
-            // Displays a confirmation message after creating the placemark.
-            Toast.makeText(
-                this,
-                "Mark created",
-                Toast.LENGTH_SHORT
-            ).show()
+                // Continue with your existing success/navigation behavior.
+            } catch (e: IllegalArgumentException) {
+                android.widget.Toast.makeText(
+                    this,
+                    e.message ?: "Please check the entered values.",
+                    android.widget.Toast.LENGTH_LONG
+                ).show()
+            }
 
         } else {
 
@@ -246,6 +290,7 @@ class AddEditActivity : AppCompatActivity() {
                 x = x,
                 y = y,
                 category = category
+
             )
 
             // Updates the existing placemark in the data store.

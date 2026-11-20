@@ -1,6 +1,7 @@
 package com.example.opentrackdayapplication.models
 
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.opentrackdayapplication.R
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.ImageView
+import androidx.core.net.toUri
 
 // Adapter that connects the list of placemarks to the RecyclerView.
 class PlacedMarkAdapter(
@@ -34,6 +37,10 @@ class PlacedMarkAdapter(
         // Displays the X and Y coordinates of the placemark.
         val coordinatesText: TextView =
             itemView.findViewById(R.id.coordinatesText)
+
+        val markImage: ImageView =
+            itemView.findViewById(R.id.markImage)
+
 
         // Displays the category of the placemark.
         val categoryText: TextView =
@@ -78,6 +85,17 @@ class PlacedMarkAdapter(
         // Displays the placemark's X and Y coordinates.
         holder.coordinatesText.text =
             "X: ${mark.x}, Y: ${mark.y}"
+
+        val imageUri = mark.imageUri?.let { it.toUri() }
+
+        if (imageUri != null) {
+            holder.markImage.setImageURI(imageUri)
+        } else {
+            holder.markImage.setImageResource(
+                android.R.drawable.ic_menu_gallery
+            )
+        }
+
 
         // Displays the placemark's category.
         holder.categoryText.text =
