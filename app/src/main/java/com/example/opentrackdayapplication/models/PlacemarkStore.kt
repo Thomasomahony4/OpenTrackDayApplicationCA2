@@ -17,6 +17,8 @@ class PlacemarkStore {
 
     // Adds a new placemark to the store.
     fun create(placemark: PlacemarkModel) {
+        placemark.validate()
+
         // Assigns the placemark a new unique ID.
         placemark.id = lastId.incrementAndGet()
 
@@ -27,6 +29,7 @@ class PlacemarkStore {
     // Updates the details of an existing placemark.
     // Returns true if the placemark is found and updated, or false otherwise.
     fun update(placemark: PlacemarkModel): Boolean {
+        placemark.validate()
         // Searches for the placemark using its ID.
         val foundPlacemark = findOne(placemark.id)
 
@@ -42,6 +45,8 @@ class PlacemarkStore {
 
             // Updates the y-coordinate of the placemark.
             foundPlacemark.y = placemark.y
+
+            foundPlacemark.imageUri = placemark.imageUri
 
             // Indicates that the update was successful.
             true
