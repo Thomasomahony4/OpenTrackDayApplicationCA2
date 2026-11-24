@@ -1,10 +1,10 @@
 package com.example.opentrackdayapplication.main
 
-
 import com.example.opentrackdayapplication.models.PlacemarkStore
 import com.example.opentrackdayapplication.models.PlacemarkModel
+import java.io.File
 
-val store = PlacemarkStore()
+val store = PlacemarkStore(File("place_list.json"))
 
 fun main() {
     println("=== Placemark Console App (Lab 1) ===")
