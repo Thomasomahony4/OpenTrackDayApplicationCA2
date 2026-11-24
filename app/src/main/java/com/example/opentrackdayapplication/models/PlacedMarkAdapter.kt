@@ -96,7 +96,6 @@ class PlacedMarkAdapter(
             )
         }
 
-
         // Displays the placemark's category.
         holder.categoryText.text =
             mark.category

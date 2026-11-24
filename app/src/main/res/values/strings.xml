@@ -7,5 +7,6 @@
         <item>Rally</item>
         <item>Karting</item>
     </string-array>
+    <string name="title_activity_map_picker">MapPickerActivity</string>
 
 </resources>
