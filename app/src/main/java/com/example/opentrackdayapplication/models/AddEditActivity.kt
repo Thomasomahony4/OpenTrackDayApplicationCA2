@@ -105,6 +105,8 @@ class AddEditActivity : AppCompatActivity() {
             categoryInput.showDropDown()
         }
 
+        imagePreview = findViewById(R.id.imageView)
+
         // Finds the button used to save a new or edited placemark.
         val saveButton =
             findViewById<Button>(R.id.saveButton)
@@ -163,8 +165,6 @@ class AddEditActivity : AppCompatActivity() {
             mapPicker.launch(intent)
         }
 
-
-        imagePreview = findViewById(R.id.imageView)
         val imagePicker =
             registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
                 if (uri != null) {
@@ -192,7 +192,7 @@ class AddEditActivity : AppCompatActivity() {
 
         // Searches the placemark store for the matching ID.
         val mark =
-            AppData.placedMarks.findOne(id)
+            AppData.placedMarkList.findOne(id)
 
         // Logs the result of the placemark lookup for debugging.
         Timber.d("found mark id=${mark}}")
@@ -225,9 +225,18 @@ class AddEditActivity : AppCompatActivity() {
         yInput.setText(mark.y.toString())
 
         // Displays the existing category in the dropdown input.
-        categoryInput.setText(mark.category)
+        categoryInput.setText(mark.category, false)
 
-
+        // Loads the existing image URI.
+        if (!mark.imageUri.isNullOrEmpty()) {
+            selectedImageUri = Uri.parse(mark.imageUri)
+            imagePreview.setImageURI(selectedImageUri)
+        } else {
+            selectedImageUri = null
+            imagePreview.setImageResource(
+                android.R.drawable.ic_menu_gallery
+            )
+        }
     }
 
     // Validates the input and creates or updates a placemark.
@@ -293,7 +302,7 @@ class AddEditActivity : AppCompatActivity() {
                     desc = descriptionInput.text.toString(),
                     x = xInput.text.toString().toDouble(),
                     y = yInput.text.toString().toDouble(),
-                    category = categoryInput.toString().trim(),
+                    category = categoryInput.text.toString().trim(),
                     imageUri = selectedImageUri?.toString()
                 )
 
@@ -301,7 +310,7 @@ class AddEditActivity : AppCompatActivity() {
                 Timber.d("Creating mark id=${mark.id}, title=${mark.title}")
                 mark.validate()
                 // Adds the new placemark to the application's data store.
-                AppData.placedMarks.create(mark)
+                AppData.placedMarkList.create(mark)
 
                 // Displays a confirmation message after creating the placemark.
                 Toast.makeText(
@@ -329,12 +338,12 @@ class AddEditActivity : AppCompatActivity() {
                 desc = description,
                 x = x,
                 y = y,
-                category = category
-
+                category = category,
+                imageUri = selectedImageUri?.toString()
             )
 
             // Updates the existing placemark in the data store.
-            AppData.placedMarks.update(mark)
+            AppData.placedMarkList.update(mark)
 
             // Displays a confirmation message after updating the placemark.
             Toast.makeText(

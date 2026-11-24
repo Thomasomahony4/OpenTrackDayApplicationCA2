@@ -3,9 +3,7 @@ package com.example.opentrackdayapplication.models
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.CompoundButton
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
@@ -13,7 +11,6 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.opentrackdayapplication.R
 import com.google.android.material.switchmaterial.SwitchMaterial
 import timber.log.Timber
-import java.util.Objects
 
 // MainActivity is the main screen of the application.
 class MainActivity : AppCompatActivity() {
@@ -48,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         val switchBtn = findViewById<SwitchMaterial?>(R.id.switchBtn)
 
         // Listens for changes to the theme switch.
-        switchBtn.setOnCheckedChangeListener { Null, isChecked ->
+        switchBtn?.setOnCheckedChangeListener { _, isChecked ->
 
             // Checks whether the switch is turned on.
             if (isChecked) {
@@ -83,5 +80,6 @@ class MainActivity : AppCompatActivity() {
                 Intent(this, AddEditActivity::class.java)
             )
         }
+        AppData.initialize(this)
     }
 }

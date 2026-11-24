@@ -10,8 +10,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.opentrackdayapplication.R
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import timber.log.Timber
 
 class MarkListActivity : AppCompatActivity() {
@@ -51,7 +49,7 @@ class MarkListActivity : AppCompatActivity() {
         // Creates the adapter and supplies it with the existing placed marks.
         adapter = PlacedMarkAdapter(
 
-            marks = AppData.placedMarks.findAll(),
+            marks = AppData.placedMarkList.findAll(),
 
             // Defines what happens when a mark is clicked or long-clicked.
             listener = object : PlacedMarkAdapter.OnMarkListener {
@@ -108,7 +106,7 @@ class MarkListActivity : AppCompatActivity() {
 
             // Refreshes the displayed marks using the latest stored data.
             adapter.updateMarks(
-                AppData.placedMarks.findAll()
+                AppData.placedMarkList.findAll()
             )
         }
     }
@@ -131,11 +129,11 @@ class MarkListActivity : AppCompatActivity() {
     private fun deleteMark(mark: PlacemarkModel) {
 
         // Removes the mark from the data source using its ID.
-        AppData.placedMarks.delete(mark.id)
+        AppData.placedMarkList.delete(mark.id)
 
         // Refreshes the RecyclerView to show the updated list.
         adapter.updateMarks(
-            AppData.placedMarks.findAll()
+            AppData.placedMarkList.findAll()
         )
     }
 }
