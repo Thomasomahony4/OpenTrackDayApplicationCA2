@@ -1,6 +1,6 @@
 package com.example.opentrackdayapplication.models
 
-
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -12,9 +12,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.opentrackdayapplication.R
 import timber.log.Timber
 import android.net.Uri
-import android.widget.ImageButton
 import android.widget.ImageView
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 
 // Activity used to create a new placemark or edit an existing one.
@@ -48,6 +50,21 @@ class AddEditActivity : AppCompatActivity() {
 
         // Loads the layout for the add/edit screen.
         setContentView(R.layout.activity_add_edit)
+
+        // Enables edge-to-edge display so the app can draw behind system bars.
+        enableEdgeToEdge()
+        // Applies padding to the main view to account for system bars.
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+
+            // Gets the sizes of the system bars, such as the status bar and navigation bar.
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            // Adds padding so the content does not overlap the system bars.
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+
+            // Returns the insets so they can continue through the view system.
+            insets
+        }
 
         // Finds the title input field in the layout.
         titleInput =
@@ -121,6 +138,29 @@ class AddEditActivity : AppCompatActivity() {
         // Closes the activity when the cancel button is clicked.
         cancelButton.setOnClickListener {
             finish()
+        }
+
+        var selectedLatitude = 0.0
+        var selectedLongitude = 0.0
+
+        val mapPicker =
+            registerForActivityResult(
+                ActivityResultContracts.StartActivityForResult()
+            ) { result ->
+                if (result.resultCode == RESULT_OK) {
+                    val data = result.data ?: return@registerForActivityResult
+                    selectedLatitude = data.getDoubleExtra("latitude", 0.0)
+                    selectedLongitude = data.getDoubleExtra("longitude", 0.0)
+
+                    selectedLatitude?.let { xInput.setText(it.toString()) }
+
+                    selectedLongitude?.let { yInput.setText(it.toString()) }
+                }
+            }
+
+        findViewById<Button>(R.id.mapButton).setOnClickListener {
+            val intent = Intent(this, MapPickerActivity::class.java)
+            mapPicker.launch(intent)
         }
 
 

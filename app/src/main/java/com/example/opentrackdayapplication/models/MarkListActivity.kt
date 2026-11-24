@@ -3,7 +3,10 @@ package com.example.opentrackdayapplication.models
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.opentrackdayapplication.R
@@ -25,6 +28,21 @@ class MarkListActivity : AppCompatActivity() {
 
         // Sets the layout file for the mark list screen.
         setContentView(R.layout.activity_mark_list)
+
+        // Enables edge-to-edge display so the app can draw behind system bars.
+        enableEdgeToEdge()
+        // Applies padding to the main view to account for system bars.
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+
+            // Gets the sizes of the system bars, such as the status bar and navigation bar.
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            // Adds padding so the content does not overlap the system bars.
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+
+            // Returns the insets so they can continue through the view system.
+            insets
+        }
 
         // Finds the RecyclerView in the layout using its ID.
         recyclerView =
