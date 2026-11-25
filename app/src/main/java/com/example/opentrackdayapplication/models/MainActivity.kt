@@ -28,6 +28,8 @@ class MainActivity : AppCompatActivity() {
         // Sets up Timber for logging debug messages during development.
         Timber.plant(Timber.DebugTree())
 
+        AppData.initialize(this)
+
         // Applies padding to the main view to account for system bars.
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
 
@@ -61,6 +63,10 @@ class MainActivity : AppCompatActivity() {
         val viewMarksButton =
             findViewById<Button>(R.id.viewMarksButton)
 
+        // Finds the button used to display the list of saved marks.
+        val viewMapListButton =
+            findViewById<Button>(R.id.viewMapListButton)
+
         // Finds the button used to add a new mark.
         val addMarkButton =
             findViewById<Button>(R.id.addMarkButton)
@@ -73,6 +79,13 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
+        viewMapListButton.setOnClickListener {
+            // Opens MarkListActivity to display the saved placemarks.
+            startActivity(
+                Intent(this, MapListActivity::class.java)
+            )
+        }
+
         // Sets an action for when the user clicks the Add Mark button.
         addMarkButton.setOnClickListener {
             // Opens AddEditActivity to create a new placemark.
@@ -80,6 +93,5 @@ class MainActivity : AppCompatActivity() {
                 Intent(this, AddEditActivity::class.java)
             )
         }
-        AppData.initialize(this)
     }
 }
