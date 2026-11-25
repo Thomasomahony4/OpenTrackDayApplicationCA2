@@ -2,6 +2,7 @@ package com.example.opentrackdayapplication.models
 
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -21,6 +22,8 @@ class MapListActivity : AppCompatActivity() {
 
     private lateinit var txtTitle: TextView
     private lateinit var txtDescription: TextView
+
+    private lateinit var txtCategory: TextView
     private lateinit var imgPlace: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,10 +46,14 @@ class MapListActivity : AppCompatActivity() {
             insets
         }
 
+        val returnButton =
+            findViewById<Button>(R.id.mapListButton)
+
         // Initialise views
         mapView = findViewById(R.id.mapList)
         txtTitle = findViewById(R.id.mapTitleText)
         txtDescription = findViewById(R.id.mapDescText)
+        txtCategory = findViewById(R.id.mapCategoryText)
         imgPlace = findViewById(R.id.mapImageView)
 
         // Configure OpenStreetMap
@@ -58,6 +65,11 @@ class MapListActivity : AppCompatActivity() {
 
         // Load placemarks
         loadMarkers()
+
+        // Closes the activity when the cancel button is clicked.
+        returnButton.setOnClickListener {
+            finish()
+        }
     }
 
     private fun loadMarkers() {
@@ -112,6 +124,8 @@ class MapListActivity : AppCompatActivity() {
         txtTitle.text = placemark.title
 
         txtDescription.text = placemark.desc
+
+        txtCategory.text = placemark.category
 
         if (placemark.imageUri != null) {
             imgPlace.setImageURI(

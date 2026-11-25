@@ -29,9 +29,11 @@
             android:id="@+id/mapDescText"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:text="Description"
-            app:layout_constraintBottom_toBottomOf="@+id/mapImageView"
+            android:gravity="center_vertical"
+            app:layout_constraintBottom_toTopOf="@+id/mapCategoryText"
             app:layout_constraintEnd_toEndOf="@+id/mapTitleText"
             app:layout_constraintStart_toStartOf="@+id/mapTitleText"
             app:layout_constraintTop_toBottomOf="@+id/mapTitleText" />
@@ -45,6 +47,15 @@
             android:text="Title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/mapCategoryText"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:text="Category"
+            app:layout_constraintBottom_toBottomOf="@+id/mapImageView"
+            app:layout_constraintEnd_toEndOf="@+id/mapTitleText"
+            app:layout_constraintStart_toStartOf="@+id/mapTitleText" />
 
         <ImageView
             android:id="@+id/mapImageView"
